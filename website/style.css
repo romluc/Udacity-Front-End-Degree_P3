@@ -1,0 +1,88 @@
+/* Base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: #eee;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+input {
+  border-radius: 4px;
+  padding: 0.5em;
+  width: 100%;
+}
+
+input::placeholder {
+  font-size: 0.8rem;
+}
+
+button#generate {
+  margin-top: 0.5em;
+  background: navy;
+}
+
+button#generate:hover {
+  background: #fff;
+  color: navy;
+}
+
+/* Utility classes */
+button {
+  cursor: pointer;
+  display: inline-block;
+  border: 0;
+  border-radius: 4px;
+  font-weight: bold;
+  padding: 10px 20px;
+  background: #262626;
+  color: #fff;
+  font-size: 15px;
+}
+
+button:hover {
+  opacity: 0.8;
+  transition: 0.4s ease;
+}
+
+.dark {
+  color: #fff;
+}
+
+.dark button {
+  background: #f4f4f4;
+  color: #333;
+}
+
+/* Main styles */
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.holder.headline {
+  padding: 1rem 0 1rem;
+  font-size: 2rem;
+}
+
+.holder.zip {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.holder.feel {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
