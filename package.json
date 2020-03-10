@@ -1,0 +1,16 @@
+{
+  "name": "p3",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "romluc <romulofilhofilho@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
