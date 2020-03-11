@@ -63,14 +63,15 @@ button:hover {
 
 /* Main styles */
 #app {
-  display: grid;
-  grid-auto-rows: minmax(150px, auto);
-  /* grid-template-columns:  */
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+  margin: 0 auto;
   background: #008080;
   color: #f0d43a;
-  justify-content: center;
-  grid-gap: 1em;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 2rem;
   font-size: 1rem;
   font-family: 'Roboto', sans-serif;
 }
@@ -83,6 +84,7 @@ button:hover {
 .holder.zip {
   display: flex;
   flex-direction: column;
+  margin-bottom: 2rem;
 }
 
 .holder.feel {

@@ -61,7 +61,7 @@ const updateUI = async () => {
   const request = await fetch('http://localhost:3000/all');
   try {
     const data = await request.json();
-    document.querySelector('.entry').innerHTML = data.name;
+    document.querySelector('.entry').innerHTML = data.title;
   } catch (error) {
     console.log('error', error);
   }
@@ -71,7 +71,11 @@ const updateUI = async () => {
 btnGenerate.addEventListener('click', e => {
   getApiData('/all')
     .then(
-      postData('http://localhost:3000/addData', { weather: 'asdf weather' })
+      postData('http://localhost:3000/addData', {
+        userId: '333',
+        id: '124',
+        title: 'asdf asdf asdf and more asdf'
+      })
     )
     .then(updateUI());
 });
