@@ -4,7 +4,7 @@ const apiKey = 'a807cf767e6a8225f0b93e3a5a88e431';
 btnGenerate = document.querySelector('#generate');
 
 // Dynamic UI requisites
-const dynamicBuilding = () => {
+const dynamicUIBuilding = () => {
   const zip = document.querySelector('.zip input');
   zip.setAttribute('id', 'zip');
 
@@ -38,7 +38,6 @@ const getApiData = async baseURL => {
   }
 };
 
-// Function to POST data
 const postData = async (url = '', data = {}) => {
   const res = await fetch(url, {
     method: 'POST',
@@ -61,23 +60,32 @@ const updateUI = async () => {
   const request = await fetch('http://localhost:3000/all');
   try {
     const data = await request.json();
-    document.querySelector('.entry').innerHTML = data.title;
+
+    const divDate = document.querySelector('#entryHolder #date');
+    const divContent = document.querySelector('#entryHolder #content');
+    const getContent = document.querySelector('.holder #feelings');
+
+    divDate.innerHTML = newDate;
+    divContent.innerHTML = getContent.value;
+    document.querySelector('.entry > .title').innerHTML = data.temperature;
   } catch (error) {
     console.log('error', error);
   }
 };
 
+dynamicUIBuilding();
+
 // Event listeners
-btnGenerate.addEventListener('click', e => {
+btnGenerate.addEventListener('click', performAction);
+
+function performAction() {
   getApiData('/all')
     .then(
       postData('http://localhost:3000/addData', {
-        userId: '333',
-        id: '124',
-        title: 'asdf asdf asdf and more asdf'
+        temperature: '333',
+        date: '124',
+        content: 'asdf asdf asdf and more asdf'
       })
     )
     .then(updateUI());
-});
-
-dynamicBuilding();
+}

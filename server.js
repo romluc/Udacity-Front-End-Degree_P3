@@ -40,36 +40,11 @@ projectData = {
   // id: 2643743,
   // name: 'London',
   // cod: 200
-
-  data: [
-    {
-      userId: 1,
-      id: 1,
-      title:
-        'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
-      body:
-        'quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto'
-    },
-    {
-      userId: 1,
-      id: 2,
-      title: 'qui est esse',
-      body:
-        'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla'
-    },
-    {
-      userId: 1,
-      id: 3,
-      title: 'ea molestias quasi exercitationem repellat qui ipsa sit aut',
-      body:
-        'et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut'
-    }
-  ]
 };
 
 // Express to run server and routes
 const express = require('express');
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Start up an instance of app
 const app = express();
@@ -109,11 +84,13 @@ function getAllData(req, res) {
 app.post('/addData', postData);
 
 function postData(req, res) {
-  const { userId, id, title } = req.body;
+  // POST route setup to add each of thes values with a key to projectData
+  const { temperature, date, content } = req.body;
+
   projectData = {
-    userId,
-    id,
-    title
+    temperature,
+    date,
+    content
   };
 
   res.send(req.body);
