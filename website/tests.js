@@ -1,4 +1,5 @@
 /* Global Variables */
+const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
 const apiKey = 'a807cf767e6a8225f0b93e3a5a88e431';
 
 btnGenerate = document.querySelector('#generate');
@@ -26,7 +27,34 @@ const dynamicUIBuilding = () => {
 let d = new Date();
 let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
-const getApiData = async baseURL => {
+// Retrieving information from the external api
+const getApiData = async () => {
+  const zip = document.querySelector('.zip input').value;
+  const sentURL = `${baseURL}${zip},us&appid=${apiKey}`;
+
+  const res = await fetch(sentURL);
+
+  try {
+    const data = await res.json();
+    console.log(data);
+
+    if (res.status === 404) {
+      const message = `Please check your zip code... Your city was not found in our database! =(`;
+      return message;
+    }
+
+    // temp retrieved in Kelvin
+    const temp = data.main.temp;
+
+    const tempInCelsius = Math.round(temp - 273);
+    console.log(tempInCelsius);
+    return tempInCelsius;
+  } catch (err) {
+    console.log('error', err);
+  }
+};
+
+const getAllData = async baseURL => {
   const res = await fetch(`http://localhost:3000${baseURL}`);
 
   try {
@@ -56,18 +84,33 @@ const postData = async (url = '', data = {}) => {
   }
 };
 
-const updateUI = async () => {
+const updateUI = async data => {
   const request = await fetch('http://localhost:3000/all');
   try {
     const data = await request.json();
+    const temperature = data.temperature;
 
     const divDate = document.querySelector('#entryHolder #date');
     const divContent = document.querySelector('#entryHolder #content');
     const getContent = document.querySelector('.holder #feelings');
 
-    divDate.innerHTML = newDate;
-    divContent.innerHTML = getContent.value;
-    document.querySelector('.entry > .title').innerHTML = data.temperature;
+    /* Included in the async function to retrieve that app’s data on the client side, existing DOM elements should have their innerHTML properties dynamically set according to data returned by the app route.  */
+
+    divDate.innerHTML = `This is ${newDate}`;
+    divContent.innerHTML = `You said ${getContent.value}`;
+    getContent.value = 'Thank you! Have a great day! =)';
+    console.log(data);
+
+    // City not found - check if data is returning the error message instead of a valid temperature value
+    if (typeof data.temperature == 'string') {
+      document.querySelector(
+        '#entryHolder > #temp'
+      ).innerHTML = `Please check your zip code...Your city today was not found in our database =(`;
+    } else {
+      document.querySelector(
+        '#entryHolder > #temp'
+      ).innerHTML = `The temperature in your city today is ${temperature}°C`;
+    }
   } catch (error) {
     console.log('error', error);
   }
@@ -79,13 +122,14 @@ dynamicUIBuilding();
 btnGenerate.addEventListener('click', performAction);
 
 function performAction() {
-  getApiData('/all')
-    .then(
+  getApiData()
+    .then(data => {
       postData('http://localhost:3000/addData', {
-        temperature: '333',
-        date: '124',
-        content: 'asdf asdf asdf and more asdf'
-      })
-    )
-    .then(updateUI());
+        temperature: data,
+        date: newDate,
+        content: document.querySelector('.holder #feelings').value
+      });
+    })
+    .then(getAllData('/all'))
+    .then(data => updateUI(data));
 }

@@ -80,6 +80,7 @@ function getAllData(req, res) {
   console.log(projectData);
 }
 
+// then add a POST route that adds incoming data to projectData
 // Post Route
 app.post('/addData', postData);
 
