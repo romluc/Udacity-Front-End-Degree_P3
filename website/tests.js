@@ -17,10 +17,13 @@ const dynamicUIBuilding = () => {
   divTemp.setAttribute('id', 'temp');
   const divContent = document.createElement('div');
   divContent.setAttribute('id', 'content');
+  const divIcon = document.createElement('div');
+  divIcon.setAttribute('id', 'icon');
 
   entryHolderDiv.appendChild(divDate);
   entryHolderDiv.appendChild(divTemp);
   entryHolderDiv.appendChild(divContent);
+  entryHolderDiv.appendChild(divIcon);
 };
 
 // Create a new date instance dynamically with JS
@@ -39,7 +42,7 @@ const getApiData = async () => {
     console.log(data);
 
     if (res.status === 404) {
-      const message = `Please check your zip code... Your city was not found in our database! =(`;
+      const message = `city not found`;
       return message;
     }
 
@@ -88,17 +91,29 @@ const postData = async (url = '', data = {}) => {
 };
 
 const updateUI = async data => {
+  const divTitle = document.querySelector('.entry .title');
+  divTitle.innerHTML = `Loading...`;
+
   const request = await fetch('http://localhost:3000/all');
+
+  const divDate = document.querySelector('#entryHolder #date');
+  const divTemp = document.querySelector('#entryHolder #temp');
+  const divContent = document.querySelector('#entryHolder #content');
+  const divIcon = document.querySelector('#entryHolder #icon');
+
+  const getContent = document.querySelector('.holder #feelings');
+
   try {
     const data = await request.json();
     const temperature = data.temperature;
     const city = data.city;
 
-    const divDate = document.querySelector('#entryHolder #date');
-    const divContent = document.querySelector('#entryHolder #content');
-    const getContent = document.querySelector('.holder #feelings');
-
     /* Included in the async function to retrieve that app’s data on the client side, existing DOM elements should have their innerHTML properties dynamically set according to data returned by the app route.  */
+
+    divTitle.innerHTML = `<h3><strong>Most recent entry</strong></h3>`;
+    divTitle.style.textAlign = 'center';
+    divTitle.style.marginBottom = '5px';
+    divTitle.style.textDecoration = 'underline';
 
     divDate.innerHTML = `Today is ${newDate}`;
     divContent.innerHTML = `You said ${getContent.value}`;
@@ -106,14 +121,12 @@ const updateUI = async data => {
     console.log(data);
 
     // City not found - check if data is returning the error message instead of a valid temperature value
-    if (typeof data.temperature == 'string') {
-      document.querySelector(
-        '#entryHolder > #temp'
-      ).innerHTML = `Please check your zip code...Your city today was not found in our database =(`;
+    if (data.temperature === 'undefined') {
+      divTemp.innerHTML = `Please check your zip code...Your city was not found in our database =(`;
     } else {
-      document.querySelector(
-        '#entryHolder > #temp'
-      ).innerHTML = `The temperature in ${city} today is ${temperature}°C`;
+      divTemp.innerHTML = `The temperature in ${city} today is ${temperature}°C`;
+      divIcon.innerHTML = `<i class="fal fa-2x fa-clouds"></i>`;
+      divIcon.style.textAlign = 'center';
     }
   } catch (error) {
     console.log('error', error);
