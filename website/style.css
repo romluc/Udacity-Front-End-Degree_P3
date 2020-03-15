@@ -75,7 +75,7 @@ button:hover {
 #app {
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  min-height: 80vh;
   width: 60%;
   border-radius: 4px;
   background: #e0e5ec;

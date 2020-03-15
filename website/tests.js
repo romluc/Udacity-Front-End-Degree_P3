@@ -24,7 +24,8 @@ const dynamicUIBuilding = () => {
   const headline = document.querySelector('.holder.headline');
   const iconAboveHeadline = document.createElement('div');
 
-  iconAboveHeadline.innerHTML = `<i class="fad fa-2x fa-spin fa-sun"></i>`;
+  iconAboveHeadline.innerHTML = `<i class="fad fa-2x fa-spin fa-sun"
+  style="--fa-primary-color: coral; --fa-secondary-color: rgb(255, 199, 43); --fa-secondary-opacity: 1.0;"></i>`;
 
   const divDate = document.createElement('div');
   divDate.setAttribute('id', 'date');
@@ -126,31 +127,47 @@ const updateUI = async data => {
       text-decoration: underline;
     `;
 
-    entryHolder.style.cssText = `
-      background-color: #fefefe;
-      border: 2px solid lightgray;
-      border-radius: 4px;
-    `;
+    // City not found - if api is returning the 404 error message instead of a valid temperature value, data.city was defined as an empty string so that we could handle it here
 
-    divDate.innerHTML = `Today is ${newDate}`;
-
-    divContent.style.color = `black`;
-
-    divContent.innerHTML = `You said ${getContent.value}`;
-
-    // City not found - check if data is returning the error message instead of a valid temperature value
     if (data.city == '') {
-      console.log(data.temperature);
       divTemp.innerHTML = `Please check your zip code...Your city was not found in our database =(`;
+
+      divIcon.innerHTML = `<i class="fad fa-exclamation-triangle"             style="--fa-primary-color: darkgray; --fa-secondary-color: gold; --fa-secondary-opacity: 1.0;"></i>`;
+
+      divIcon.style.cssText = `
+      transition: 0.8s;
+      transform: scale(1.1);
+      text-align: center;
+      font-size: 2rem;
+      `;
+
+      entryHolder.style.cssText = `
+        background-color: #f08080;
+        border: 2px solid #ff7070;
+        border-radius: 4px;
+      `;
     } else {
+      // We had valid data returning from the api
+      entryHolder.style.color = '#eee';
+      divDate.innerHTML = `Today is ${newDate}`;
+
       divTemp.innerHTML = `The temperature today in ${city} is ${temperature}°C`;
-      divIcon.innerHTML = `<i class="fal fa-clouds"></i>`;
+      divContent.innerHTML = `You said ${getContent.value}`;
+
+      divIcon.innerHTML = `<i class="fad fa-clouds" style="--fa-primary-color: snow; --fa-secondary-color: skyblue; --fa-secondary-opacity: 1.0;"></i>`;
+
       divIcon.style.cssText = `
         transition: 0.8s;
         transform: translateX(10%) translateY(30%);
         color: skyblue;
         text-align: center;
         font-size: 2rem;
+      `;
+
+      entryHolder.style.cssText = `
+        background-color: #aea;
+        border: 2px solid palegreen;
+        border-radius: 4px;
       `;
     }
   } catch (error) {
