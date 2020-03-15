@@ -86,14 +86,14 @@ app.post('/addData', postData);
 
 function postData(req, res) {
   // POST route setup to add each of thes values with a key to projectData
-  const { temperature, date, content } = req.body;
+  const { date, temperature, city, content } = req.body;
 
   projectData = {
-    temperature,
     date,
+    temperature,
+    city,
     content
   };
 
   res.send(req.body);
-  console.log(projectData);
 }

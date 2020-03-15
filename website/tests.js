@@ -43,12 +43,15 @@ const getApiData = async () => {
       return message;
     }
 
-    // temp retrieved in Kelvin
+    // Retrieving also the name of the city for a more accurate response to the user
+    const city = data.name;
+
+    // temperature retrieved in Kelvin
     const temp = data.main.temp;
 
     const tempInCelsius = Math.round(temp - 273);
-    console.log(tempInCelsius);
-    return tempInCelsius;
+
+    return { city, tempInCelsius };
   } catch (err) {
     console.log('error', err);
   }
@@ -89,6 +92,7 @@ const updateUI = async data => {
   try {
     const data = await request.json();
     const temperature = data.temperature;
+    const city = data.city;
 
     const divDate = document.querySelector('#entryHolder #date');
     const divContent = document.querySelector('#entryHolder #content');
@@ -96,7 +100,7 @@ const updateUI = async data => {
 
     /* Included in the async function to retrieve that app’s data on the client side, existing DOM elements should have their innerHTML properties dynamically set according to data returned by the app route.  */
 
-    divDate.innerHTML = `This is ${newDate}`;
+    divDate.innerHTML = `Today is ${newDate}`;
     divContent.innerHTML = `You said ${getContent.value}`;
     getContent.value = 'Thank you! Have a great day! =)';
     console.log(data);
@@ -109,7 +113,7 @@ const updateUI = async data => {
     } else {
       document.querySelector(
         '#entryHolder > #temp'
-      ).innerHTML = `The temperature in your city today is ${temperature}°C`;
+      ).innerHTML = `The temperature in ${city} today is ${temperature}°C`;
     }
   } catch (error) {
     console.log('error', error);
@@ -125,8 +129,9 @@ function performAction() {
   getApiData()
     .then(data => {
       postData('http://localhost:3000/addData', {
-        temperature: data,
         date: newDate,
+        city: data.city,
+        temperature: data.tempInCelsius,
         content: document.querySelector('.holder #feelings').value
       });
     })
