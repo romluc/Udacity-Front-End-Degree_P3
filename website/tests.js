@@ -4,9 +4,16 @@ const apiKey = 'a807cf767e6a8225f0b93e3a5a88e431';
 
 btnGenerate = document.querySelector('#generate');
 
+// Fields fulfilled by user
+const zip = document.querySelector('.zip input');
+const divContent = document.createElement('div');
+
+// Elements to be updated upon validation
+const getContent = document.querySelector('.holder #feelings');
+const divTitle = document.querySelector('.entry .title');
+
 // Dynamic UI requisites
 const dynamicUIBuilding = () => {
-  const zip = document.querySelector('.zip input');
   zip.setAttribute('id', 'zip');
 
   const entryHolderDiv = document.querySelector('#entryHolder');
@@ -15,7 +22,6 @@ const dynamicUIBuilding = () => {
   divDate.setAttribute('id', 'date');
   const divTemp = document.createElement('div');
   divTemp.setAttribute('id', 'temp');
-  const divContent = document.createElement('div');
   divContent.setAttribute('id', 'content');
   const divIcon = document.createElement('div');
   divIcon.setAttribute('id', 'icon');
@@ -33,7 +39,7 @@ let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 // Retrieving information from the external api
 const getApiData = async () => {
   const zip = document.querySelector('.zip input').value;
-  const sentURL = `${baseURL}${zip},us&appid=${apiKey}`;
+  const sentURL = `${baseURL}${zip},&appid=${apiKey}`;
 
   const res = await fetch(sentURL);
 
@@ -61,7 +67,7 @@ const getApiData = async () => {
 };
 
 const getAllData = async baseURL => {
-  const res = await fetch(`http://localhost:3000${baseURL}`);
+  const res = await fetch(`${baseURL}`);
 
   try {
     const data = await res.json();
@@ -91,17 +97,15 @@ const postData = async (url = '', data = {}) => {
 };
 
 const updateUI = async data => {
-  const divTitle = document.querySelector('.entry .title');
   divTitle.innerHTML = `Loading...`;
 
-  const request = await fetch('http://localhost:3000/all');
+  const request = await fetch('/all');
 
+  const entryHolder = document.querySelector('#entryHolder');
   const divDate = document.querySelector('#entryHolder #date');
   const divTemp = document.querySelector('#entryHolder #temp');
   const divContent = document.querySelector('#entryHolder #content');
   const divIcon = document.querySelector('#entryHolder #icon');
-
-  const getContent = document.querySelector('.holder #feelings');
 
   try {
     const data = await request.json();
@@ -111,22 +115,38 @@ const updateUI = async data => {
     /* Included in the async function to retrieve that app’s data on the client side, existing DOM elements should have their innerHTML properties dynamically set according to data returned by the app route.  */
 
     divTitle.innerHTML = `<h3><strong>Most recent entry</strong></h3>`;
-    divTitle.style.textAlign = 'center';
-    divTitle.style.marginBottom = '5px';
-    divTitle.style.textDecoration = 'underline';
+    divTitle.style.cssText = `
+      text-align: center;
+      margin-bottom: 5px;
+      text-decoration: underline;
+    `;
+
+    entryHolder.style.cssText = `
+      background-color: #fefefe;
+      border: 2px solid lightgray;
+      border-radius: 4px;
+    `;
 
     divDate.innerHTML = `Today is ${newDate}`;
+
     divContent.innerHTML = `You said ${getContent.value}`;
-    getContent.value = 'Thank you! Have a great day! =)';
-    console.log(data);
+    divContent.style.color = `black`;
+
+    getContent.value = `Thank you! Have a great day! =)`;
 
     // City not found - check if data is returning the error message instead of a valid temperature value
     if (data.temperature === 'undefined') {
       divTemp.innerHTML = `Please check your zip code...Your city was not found in our database =(`;
     } else {
       divTemp.innerHTML = `The temperature in ${city} today is ${temperature}°C`;
-      divIcon.innerHTML = `<i class="fal fa-2x fa-clouds"></i>`;
-      divIcon.style.textAlign = 'center';
+      divIcon.innerHTML = `<i class="fal fa-clouds"></i>`;
+      divIcon.style.cssText = `
+        transition: 0.8s;
+        transform: translateX(10%) translateY(30%);
+        color: skyblue;
+        text-align: center;
+        font-size: 2rem;
+      `;
     }
   } catch (error) {
     console.log('error', error);
@@ -135,19 +155,38 @@ const updateUI = async data => {
 
 dynamicUIBuilding();
 
+const validateUserInput = () => {
+  let isValid = true;
+  divTitle.innerHTML = ``;
+  if (zip.value.length !== 5) {
+    divContent.innerHTML = `<strong>Please use a US valid zip code with 5 algarisms.</strong>
+                            (e.g., 33129, 10110)`;
+    divContent.style.color = `tomato`;
+    isValid = false;
+  } else if (getContent.value === '') {
+    divContent.innerHTML = `<strong>Please tell us how you feel today! <strong>
+                            `;
+    divContent.style.color = `tomato`;
+    isValid = false;
+  }
+  return isValid;
+};
+
 // Event listeners
 btnGenerate.addEventListener('click', performAction);
 
 function performAction() {
-  getApiData()
-    .then(data => {
-      postData('http://localhost:3000/addData', {
-        date: newDate,
-        city: data.city,
-        temperature: data.tempInCelsius,
-        content: document.querySelector('.holder #feelings').value
-      });
-    })
-    .then(getAllData('/all'))
-    .then(data => updateUI(data));
+  if (validateUserInput()) {
+    getApiData()
+      .then(data => {
+        postData('http://localhost:3000/addData', {
+          date: newDate,
+          city: data.city,
+          temperature: data.tempInCelsius,
+          content: document.querySelector('.holder #feelings').value
+        });
+      })
+      .then(getAllData('/all'))
+      .then(data => updateUI(data));
+  }
 }
