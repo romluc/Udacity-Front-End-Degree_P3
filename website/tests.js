@@ -4,6 +4,8 @@ const apiKey = 'a807cf767e6a8225f0b93e3a5a88e431';
 
 btnGenerate = document.querySelector('#generate');
 
+let sequenceError = false;
+
 // Fields fulfilled by user
 const zip = document.querySelector('.zip input');
 const divContent = document.createElement('div');
@@ -11,12 +13,18 @@ const divContent = document.createElement('div');
 // Elements to be updated upon validation
 const getContent = document.querySelector('.holder #feelings');
 const divTitle = document.querySelector('.entry .title');
+const entryHolder = document.querySelector('#entryHolder');
 
 // Dynamic UI requisites
 const dynamicUIBuilding = () => {
   zip.setAttribute('id', 'zip');
 
   const entryHolderDiv = document.querySelector('#entryHolder');
+
+  const headline = document.querySelector('.holder.headline');
+  const iconAboveHeadline = document.createElement('div');
+
+  iconAboveHeadline.innerHTML = `<i class="fad fa-2x fa-spin fa-sun"></i>`;
 
   const divDate = document.createElement('div');
   divDate.setAttribute('id', 'date');
@@ -30,6 +38,8 @@ const dynamicUIBuilding = () => {
   entryHolderDiv.appendChild(divTemp);
   entryHolderDiv.appendChild(divContent);
   entryHolderDiv.appendChild(divIcon);
+
+  headline.prepend(iconAboveHeadline);
 };
 
 // Create a new date instance dynamically with JS
@@ -39,30 +49,26 @@ let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 // Retrieving information from the external api
 const getApiData = async () => {
   const zip = document.querySelector('.zip input').value;
-  const sentURL = `${baseURL}${zip},&appid=${apiKey}`;
+  const sentURL = `${baseURL}${zip},us&appid=${apiKey}`;
+
+  let city = '',
+    temperature = '';
 
   const res = await fetch(sentURL);
 
   try {
     const data = await res.json();
-    console.log(data);
 
-    if (res.status === 404) {
-      const message = `city not found`;
-      return message;
+    if (res.status === 200) {
+      // Retrieving also the name of the city for a more accurate response to the user
+      city = data.name;
+
+      // temperature retrieved in Kelvin
+      temperature = Math.round(data.main.temp - 273);
     }
-
-    // Retrieving also the name of the city for a more accurate response to the user
-    const city = data.name;
-
-    // temperature retrieved in Kelvin
-    const temp = data.main.temp;
-
-    const tempInCelsius = Math.round(temp - 273);
-
-    return { city, tempInCelsius };
+    return { city, temperature };
   } catch (err) {
-    console.log('error', err);
+    console.warn(err);
   }
 };
 
@@ -71,7 +77,6 @@ const getAllData = async baseURL => {
 
   try {
     const data = await res.json();
-    console.log(data);
     return data;
   } catch (err) {
     console.log('error', err);
@@ -101,7 +106,6 @@ const updateUI = async data => {
 
   const request = await fetch('/all');
 
-  const entryHolder = document.querySelector('#entryHolder');
   const divDate = document.querySelector('#entryHolder #date');
   const divTemp = document.querySelector('#entryHolder #temp');
   const divContent = document.querySelector('#entryHolder #content');
@@ -109,6 +113,7 @@ const updateUI = async data => {
 
   try {
     const data = await request.json();
+
     const temperature = data.temperature;
     const city = data.city;
 
@@ -129,16 +134,16 @@ const updateUI = async data => {
 
     divDate.innerHTML = `Today is ${newDate}`;
 
-    divContent.innerHTML = `You said ${getContent.value}`;
     divContent.style.color = `black`;
 
-    getContent.value = `Thank you! Have a great day! =)`;
+    divContent.innerHTML = `You said ${getContent.value}`;
 
     // City not found - check if data is returning the error message instead of a valid temperature value
-    if (data.temperature === 'undefined') {
+    if (data.city == '') {
+      console.log(data.temperature);
       divTemp.innerHTML = `Please check your zip code...Your city was not found in our database =(`;
     } else {
-      divTemp.innerHTML = `The temperature in ${city} today is ${temperature}°C`;
+      divTemp.innerHTML = `The temperature today in ${city} is ${temperature}°C`;
       divIcon.innerHTML = `<i class="fal fa-clouds"></i>`;
       divIcon.style.cssText = `
         transition: 0.8s;
@@ -157,18 +162,35 @@ dynamicUIBuilding();
 
 const validateUserInput = () => {
   let isValid = true;
-  divTitle.innerHTML = ``;
+
+  divTitle.style.color = `tomato`;
+  divTitle.style.textDecoration = `underline`;
+
   if (zip.value.length !== 5) {
+    // Enhance UX by making errors response more dynamic =)
+    if (!sequenceError) {
+      divTitle.innerHTML = `Oops...`;
+    } else {
+      divTitle.innerHTML = `Oops again...`;
+    }
     divContent.innerHTML = `<strong>Please use a US valid zip code with 5 algarisms.</strong>
-                            (e.g., 33129, 10110)`;
+    (e.g., 33129, 10110)`;
     divContent.style.color = `tomato`;
     isValid = false;
+    sequenceError = true;
   } else if (getContent.value === '') {
+    if (!sequenceError) {
+      divTitle.innerHTML = `Oops...`;
+    } else {
+      divTitle.innerHTML = `Oops again...`;
+    }
     divContent.innerHTML = `<strong>Please tell us how you feel today! <strong>
-                            `;
+    `;
     divContent.style.color = `tomato`;
     isValid = false;
+    sequenceError = true;
   }
+
   return isValid;
 };
 
@@ -179,11 +201,11 @@ function performAction() {
   if (validateUserInput()) {
     getApiData()
       .then(data => {
-        postData('http://localhost:3000/addData', {
+        postData('/addData', {
           date: newDate,
           city: data.city,
-          temperature: data.tempInCelsius,
-          content: document.querySelector('.holder #feelings').value
+          temperature: data.temperature,
+          content: getContent.value
         });
       })
       .then(getAllData('/all'))

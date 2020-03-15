@@ -81,7 +81,7 @@ button:hover {
   background: #e0e5ec;
   color: #333;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-around;
   padding-top: 2rem;
   font-size: 1rem;
   font-family: 'Open Sans', sans-serif;
@@ -97,9 +97,9 @@ button:hover {
   text-align: center;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .holder.headline {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 }
 
@@ -124,8 +124,14 @@ button:hover {
   border-radius: 4px;
 }
 
+/* .holder.entry {
+  display: flex;
+  flex-direction: column;
+} */
+
 /* Entry Holder and Children Styles */
 .entry .title {
+  display: none;
   text-align: center;
   padding: 0 1em 0;
 }
@@ -134,5 +140,5 @@ button:hover {
   display: flex;
   flex-direction: column;
   padding: 1em;
-  margin: 0 1em;
+  margin: 1em;
 }
