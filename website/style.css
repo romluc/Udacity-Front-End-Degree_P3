@@ -81,7 +81,7 @@ button:hover {
   background: #e0e5ec;
   color: #333;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   padding-top: 2rem;
   font-size: 1rem;
   font-family: 'Open Sans', sans-serif;
@@ -124,14 +124,8 @@ button:hover {
   border-radius: 4px;
 }
 
-/* .holder.entry {
-  display: flex;
-  flex-direction: column;
-} */
-
 /* Entry Holder and Children Styles */
 .entry .title {
-  display: none;
   text-align: center;
   padding: 0 1em 0;
 }
@@ -141,4 +135,12 @@ button:hover {
   flex-direction: column;
   padding: 1em;
   margin: 1em;
+}
+
+select {
+  font-size: 0.7em;
+  text-indent: 0.5em;
+  margin-bottom: 0.7em;
+  border-radius: 4px;
+  background-color: #f4f4f4;
 }
