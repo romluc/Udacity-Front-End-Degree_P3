@@ -8,6 +8,7 @@
 - Fetch API to retrieve data from OpenWeather
 - Dynamic building of elements and styling with Vanilla JS
 - ES6+ features such as template literals, arrow functions, async/await
+- dotenv
 - Yarn
 - Nodemon
 
