@@ -2,8 +2,6 @@
 // by romluc
 
 /* Global Variables */
-// const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
-// const apiKey = process.env.API_KEY;
 
 btnGenerate = document.querySelector('#generate');
 
@@ -22,8 +20,6 @@ const entryHolder = document.querySelector('#entryHolder');
 // Dynamic UI requisites
 const dynamicUIBuilding = () => {
   zip.setAttribute('id', 'zip');
-
-  const zipHolder = document.querySelector('.holder.zip');
 
   const headline = document.querySelector('.holder.headline');
   const iconAboveHeadline = document.createElement('div');
