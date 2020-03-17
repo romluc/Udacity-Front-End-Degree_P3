@@ -1,8 +1,8 @@
-# :sun_behind_rain_cloud: Weather Journal App :sun_behind_rain_cloud:
+# :rainbow Weather Journal App :sun_behind_rain_cloud:
 
-## Project built as part of Udacity's Front-End Developer Nanodegree :umbrella
+## Project built as part of Udacity's Front-End Developer Nanodegree :umbrella:
 
-## Features
+## Features :snowman_with_snow:
 
 - NodeJS + Express API
 - Fetch API to retrieve data from OpenWeather
