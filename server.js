@@ -4,7 +4,7 @@ projectData = {};
 require('dotenv').config();
 
 urlData = {
-  baseUrl: `http://api.openweathermap.org/data/2.5/weather?zip=`,
+  baseUrl: process.env.BASE_URL,
   apiKey: process.env.API_KEY
 };
 
