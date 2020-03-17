@@ -1,6 +1,6 @@
-# Weather Journal App
+# :sun_behind_rain_cloud: Weather Journal App :sun_behind_rain_cloud:
 
-## Project built as part of Udacity's Front-End Developer Nanodegree
+## Project built as part of Udacity's Front-End Developer Nanodegree :umbrella
 
 ## Features
 
