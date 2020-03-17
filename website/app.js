@@ -1,5 +1,5 @@
 // Udacity FEND - P3 - Weather journal app
-// By romluc
+// by romluc
 
 /* Global Variables */
 const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
@@ -56,7 +56,7 @@ let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 const getApiData = async country => {
   const zip = document.querySelector('.zip input').value;
 
-  const sentURL = `${baseURL}${zip},${country}&appid=${apiKey}`;
+  const sentURL = `${baseURL}${zip},us&appid=${apiKey}`;
 
   let city = '',
     temperature = '';
@@ -204,16 +204,7 @@ const validateUserInput = () => {
 
   divTitle.textContent = '';
 
-  if (zip.value.length === 5) {
-    country = 'us';
-  } else if (zip.value.length === 6) {
-    country = 'ca';
-  }
-
-  console.log(zip.value.length);
-  console.log(country);
-
-  if (zip.value.length < 5 || zip.value.length > 6) {
+  if (zip.value.length !== 5) {
     // Enhance UX by making errors response more dynamic =)
     if (!sequenceError) {
       spanCheckValidation.innerHTML = `Oops...`;
@@ -221,7 +212,7 @@ const validateUserInput = () => {
       spanCheckValidation.innerHTML = `Oops again...`;
     }
     spanCheckValidation.innerHTML += `<strong>Please use a US valid zip code with 5 algarisms.
-    (e.g., 33129, 10110) or a Canada valid zip code with 6 algarisms (e.g. M4P 1A6) </strong>`;
+    (e.g., 33129, 10110)</strong>`;
 
     isValid = false;
     sequenceError = true;

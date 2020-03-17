@@ -36,7 +36,6 @@ app.get('/all', getAllData);
 // Callback function to complete GET '/all'
 function getAllData(req, res) {
   res.send(projectData);
-  console.log(projectData);
 }
 
 // then add a POST route that adds incoming data to projectData
