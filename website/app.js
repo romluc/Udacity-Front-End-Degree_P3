@@ -2,8 +2,8 @@
 // by romluc
 
 /* Global Variables */
-const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
-const apiKey = 'a807cf767e6a8225f0b93e3a5a88e431';
+// const baseURL = 'http://api.openweathermap.org/data/2.5/weather?zip=';
+// const apiKey = process.env.API_KEY;
 
 btnGenerate = document.querySelector('#generate');
 
@@ -52,11 +52,25 @@ const dynamicUIBuilding = () => {
 let d = new Date();
 let newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
 
+const getUrlData = async (url = '') => {
+  const res = await fetch(url);
+
+  try {
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log('error', err);
+  }
+};
+
 // Retrieving information from the external api
-const getApiData = async country => {
+const getApiData = async () => {
+  const urlData = await getUrlData('/urlData');
+  const { baseUrl, apiKey } = urlData;
+
   const zip = document.querySelector('.zip input').value;
 
-  const sentURL = `${baseURL}${zip},us&appid=${apiKey}`;
+  const sentURL = `${baseUrl}${zip},us&appid=${apiKey}`;
 
   let city = '',
     temperature = '';
@@ -188,7 +202,6 @@ const updateUI = async () => {
 dynamicUIBuilding();
 
 const validateUserInput = () => {
-  let country = 'us';
   let isValid = true;
 
   // spanCheckValidation = document.createElement('span');

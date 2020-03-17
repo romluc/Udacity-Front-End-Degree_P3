@@ -1,6 +1,13 @@
 // Empty JS object to act as endpoint for all routes
 projectData = {};
 
+require('dotenv').config();
+
+urlData = {
+  baseUrl: `http://api.openweathermap.org/data/2.5/weather?zip=`,
+  apiKey: process.env.API_KEY
+};
+
 // Express to run server and routes
 const express = require('express');
 const port = process.env.PORT || 3000;
@@ -26,6 +33,11 @@ app.use(express.static('website'));
 // Start up the server
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
+});
+
+// Send sensitive data to the front-end side
+app.get('/urlData', (req, res) => {
+  res.send(urlData);
 });
 
 // 2. Add a GET route that returns the projectData
